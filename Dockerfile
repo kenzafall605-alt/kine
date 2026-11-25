@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # --- Étape 2 : application PHP + Apache ---
-FROM php:8.3-apache
+FROM php:8.4-apache
 
 RUN apt-get update && apt-get install -y libpq-dev libzip-dev libicu-dev unzip git \
     && docker-php-ext-install pdo_pgsql pgsql zip intl bcmath opcache \
