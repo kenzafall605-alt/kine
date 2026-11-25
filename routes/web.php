@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\RendezVousController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 // AUTHENTIFICATION
@@ -93,4 +94,34 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::delete('/rendez-vous/{rendezVous}', [RendezVousController::class, 'destroy'])
         ->whereNumber('rendezVous')
         ->name('rendez-vous.destroy');
+
+    // MODULE PRESTATIONS
+
+    // Liste des prestations
+    Route::get('/prestations', [ServiceController::class, 'index'])
+        ->name('services.index');
+
+    // Formulaire de création
+    Route::get('/prestations/create', [ServiceController::class, 'create'])
+        ->name('services.create');
+
+    // Enregistrement
+    Route::post('/prestations', [ServiceController::class, 'store'])
+        ->name('services.store');
+
+    // Formulaire de modification
+    Route::get('/prestations/{service}/edit', [ServiceController::class, 'edit'])
+        ->whereNumber('service')
+        ->name('services.edit');
+
+    // Mise à jour
+    Route::put('/prestations/{service}', [ServiceController::class, 'update'])
+        ->whereNumber('service')
+        ->name('services.update');
+
+    // Activation / désactivation
+    Route::patch('/prestations/{service}/statut', [ServiceController::class, 'toggleStatus'])
+        ->whereNumber('service')
+        ->name('services.toggle-status');
+
 });
