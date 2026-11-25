@@ -1,6 +1,8 @@
 <?php
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\RendezVousController;
 use Illuminate\Support\Facades\Route;
 
 // AUTHENTIFICATION
@@ -12,12 +14,14 @@ Route::middleware('guest')->group(function () {
         ->name('login.store');
 });
 
-// ESPACE UTILISATEUR PROTÉGÉ
+// ESPACE UTILISATEUR PROTEGE
 Route::middleware(['auth', 'active'])->group(function () {
 
+    // DECONNEXION
     Route::post('/deconnexion', [LoginController::class, 'destroy'])
         ->name('logout');
 
+    // TABLEAU DE BORD
     Route::view('/', 'dashboard')->name('dashboard');
 
     // GESTION DES CLIENTS
@@ -50,8 +54,43 @@ Route::middleware(['auth', 'active'])->group(function () {
         ->whereNumber('client')
         ->name('clients.show');
 
-    // AUTRES MODULES
-    foreach (glob(base_path('routes/modules/*.php')) as $moduleRoutes) {
-        require $moduleRoutes;
-    }
+    // MODULE RENDEZ-VOUS (VUE TEMPORAIRE)
+   Route::get('/rendez-vous', [RendezVousController::class, 'index'])
+    ->name('rendez-vous.index');
+    Route::get('/rendez-vous/create', [RendezVousController::class, 'create'])
+    ->name('rendez-vous.create');
+
+    // MODULE RENDEZ-VOUS
+
+    // Liste des rendez-vous
+    Route::get('/rendez-vous', [RendezVousController::class, 'index'])
+        ->name('rendez-vous.index');
+
+    // Formulaire de création
+    Route::get('/rendez-vous/create', [RendezVousController::class, 'create'])
+        ->name('rendez-vous.create');
+
+    // Enregistrement
+    Route::post('/rendez-vous', [RendezVousController::class, 'store'])
+        ->name('rendez-vous.store');
+
+    // Consultation des détails
+    Route::get('/rendez-vous/{rendezVous}', [RendezVousController::class, 'show'])
+        ->whereNumber('rendezVous')
+        ->name('rendez-vous.show');
+
+    // Formulaire de modification
+    Route::get('/rendez-vous/{rendezVous}/edit', [RendezVousController::class, 'edit'])
+        ->whereNumber('rendezVous')
+        ->name('rendez-vous.edit');
+
+    // Enregistrement des modifications
+    Route::put('/rendez-vous/{rendezVous}', [RendezVousController::class, 'update'])
+        ->whereNumber('rendezVous')
+        ->name('rendez-vous.update');
+
+    // Annulation du rendez-vous
+    Route::delete('/rendez-vous/{rendezVous}', [RendezVousController::class, 'destroy'])
+        ->whereNumber('rendezVous')
+        ->name('rendez-vous.destroy');
 });

@@ -1,0 +1,71 @@
+[1mdiff --cc routes/web.php[m
+[1mindex f0e8dd5,e2baec0..0000000[m
+[1m--- a/routes/web.php[m
+[1m+++ b/routes/web.php[m
+[36m@@@ -1,6 -1,57 +1,65 @@@[m
+  <?php[m
+[32m++<<<<<<< Updated upstream[m
+[32m +[m
+[32m +use Illuminate\Support\Facades\Route;[m
+[32m +[m
+[32m +// Route provisoire : sera protégée par l'authentification dans feature/auth-roles[m
+[31m- Route::view('/', 'dashboard')->name('dashboard');[m
+[32m++Route::view('/', 'dashboard')->name('dashboard');[m
+[32m++=======[m
+[32m+ use App\Http\Controllers\Auth\LoginController;[m
+[32m+ use App\Http\Controllers\ClientController;[m
+[32m+ use Illuminate\Support\Facades\Route;[m
+[32m+ [m
+[32m+ // AUTHENTIFICATION[m
+[32m+ Route::middleware('guest')->group(function () {[m
+[32m+     Route::get('/connexion', [LoginController::class, 'create'])[m
+[32m+         ->name('login');[m
+[32m+ [m
+[32m+     Route::post('/connexion', [LoginController::class, 'store'])[m
+[32m+         ->name('login.store');[m
+[32m+ });[m
+[32m+ [m
+[32m+ // ESPACE UTILISATEUR PROTÉGÉ[m
+[32m+ Route::middleware(['auth', 'active'])->group(function () {[m
+[32m+ [m
+[32m+     Route::post('/deconnexion', [LoginController::class, 'destroy'])[m
+[32m+         ->name('logout');[m
+[32m+ [m
+[32m+     Route::view('/', 'dashboard')->name('dashboard');[m
+[32m+ [m
+[32m+     // GESTION DES CLIENTS[m
+[32m+     Route::get('/clients', [ClientController::class, 'index'])[m
+[32m+         ->name('clients.index');[m
+[32m+ [m
+[32m+     Route::get('/clients/create', [ClientController::class, 'create'])[m
+[32m+         ->name('clients.create');[m
+[32m+ [m
+[32m+     Route::post('/clients', [ClientController::class, 'store'])[m
+[32m+         ->name('clients.store');[m
+[32m+ [m
+[32m+     Route::get('/clients/{client}/edit', [ClientController::class, 'edit'])[m
+[32m+         ->whereNumber('client')[m
+[32m+         ->name('clients.edit');[m
+[32m+ [m
+[32m+     Route::put('/clients/{client}', [ClientController::class, 'update'])[m
+[32m+         ->whereNumber('client')[m
+[32m+         ->name('clients.update');[m
+[32m+ [m
+[32m+     Route::delete('/clients/{client}', [ClientController::class, 'destroy'])[m
+[32m+         ->whereNumber('client')[m
+[32m+         ->name('clients.destroy');[m
+[32m+ [m
+[32m+     Route::patch('/clients/{id}/restore', [ClientController::class, 'restore'])[m
+[32m+         ->whereNumber('id')[m
+[32m+         ->name('clients.restore');[m
+[32m+ [m
+[32m+     Route::get('/clients/{client}', [ClientController::class, 'show'])[m
+[32m+         ->whereNumber('client')[m
+[32m+         ->name('clients.show');[m
+[32m+ [m
+[32m+     // AUTRES MODULES[m
+[32m+     foreach (glob(base_path('routes/modules/*.php')) as $moduleRoutes) {[m
+[32m+         require $moduleRoutes;[m
+[32m+     }[m
+[32m+ });[m
+[32m++>>>>>>> Stashed changes[m
